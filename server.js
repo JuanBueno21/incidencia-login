@@ -52,10 +52,10 @@ app.post("/login", async (req, res) => {
     log("ERROR", "AuthService - Error validating user token");
     log("WARN", `AuthController - Login attempt failed for user: ${username}`);
     log("ERROR", `DBConnection - ${err.message}`);
-    // PROBLEMA: cualquier error interno se muestra como "credenciales no válidas"
-    return res
-      .status(401)
-      .json({ message: "Error: credenciales no válidas. Inténtelo nuevamente." });
+        // Un error interno ya no se muestra como "credenciales no válidas"
+        return res
+        .status(503)
+        .json({ message: "Servicio no disponible. Inténtelo más tarde." });
   }
 });
 
