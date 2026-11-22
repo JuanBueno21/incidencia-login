@@ -9,7 +9,7 @@ app.use(express.static(path.join(__dirname, "public")));
 const users = [{ username: "jgarcia", password: "1234" }];
 
 // Configuración de la simulación
-const QUERY_TIME_MS = 8000; // la consulta a "users" tarda 8 s (consulta lenta tras la actualización)
+const QUERY_TIME_MS = 200; // consulta optimizada (se restaura el rendimiento anterior)
 const MAX_WAIT_MS = 6000;   // el módulo de autenticación solo espera 6 s
 const MAX_ERRORS = 3;       // tras 3 errores internos el servicio responde 500
 let internalErrors = 0;
@@ -52,10 +52,10 @@ app.post("/login", async (req, res) => {
     log("ERROR", "AuthService - Error validating user token");
     log("WARN", `AuthController - Login attempt failed for user: ${username}`);
     log("ERROR", `DBConnection - ${err.message}`);
-    // PROBLEMA: cualquier error interno se muestra como "credenciales no válidas"
-    return res
-      .status(401)
-      .json({ message: "Error: credenciales no válidas. Inténtelo nuevamente." });
+        // Un error interno ya no se muestra como "credenciales no válidas"
+        return res
+        .status(503)
+        .json({ message: "Servicio no disponible. Inténtelo más tarde." });
   }
 });
 
